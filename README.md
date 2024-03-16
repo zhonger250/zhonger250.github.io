@@ -5,6 +5,7 @@ Java 学习
 
 ## 面试题
 [面试题](https://github.com/zhonger250/zhonger250.github.io/blob/main/%E9%9D%A2%E8%AF%95%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%A2%98%E6%95%B4%E7%90%86.md)
+[面试题_数据库](https://github.com/zhonger250/zhonger250.github.io/blob/main/%E9%9D%A2%E8%AF%95%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%A2%98_%E6%95%B0%E6%8D%AE%E5%BA%93.md)
 
 ## 注意事项
 [注意事项](https://github.com/zhonger250/zhonger250.github.io/blob/main/%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.md)
