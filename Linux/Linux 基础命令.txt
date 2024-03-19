@@ -1,0 +1,124 @@
+Linux 基础命令
+
+1 当前登录的用户名
+whoami
+
+2 查看当前路径
+pwd
+
+3 切换kgc用户的目录
+cd  /home/kgc
+
+4 查看目录下的所有子文件夹(目录)和文件
+ls -l
+
+drwxr-xr--. 2 kgc kgc  6 10月 24 23:35 公共
+
+d 表示当前是一个目录
+rwx 表示当前目录的创建者拥有的权限 r(读)  w(写)  x(执行)
+r-x 表示与目录创建者在同一组的用户拥有的权限 r(读)  -(没有写的权限)  x(执行)
+r-- 表示其他组的用户拥有的权限   r(读)  -(没有写的权限)  x(没有执行) 
+
+
+5 切换到公共目录
+cd 公共
+
+切换到/home/kgc 
+cd  /home/kgc
+
+6 创建文件
+touch  Hello.java
+
+
+7 编辑Helo.java文件
+vi Hello.java  
+
+按"i"键     进入到编辑模式 (写内容)
+按"ESC"键   退出编辑模式
+按":"键     进入到命令模式,输入wq 按回车键（保存退出） 输入q!按回车(直接退出)
+
+8 删除文件
+rm  -rf   Hello.java
+rm删除  -r 递归删除   -f 强制删除
+
+9 查看文件内容(小的文件内容)
+cat Hello.java
+
+10 tail命令可以看到文件的最后几行的内容
+查看Hello.java文件的最后5行的内容
+tail -5  Hello.java
+
+11 head命令可以到文件的开始几行的内容
+查看Hello.java文件的开始1行的内容
+head -1 Hello.java
+
+12 创建文件夹
+mkdir -p   /home/kgc/Hello/java   
+
+
+13 复制
+将/usr/software/jdk1.8.0_144 文件夹复制到 /usr/local文件夹下
+cp -r  /usr/software/jdk1.8.0_144   /usr/local
+
+
+14 剪切/重命名(如果最后一个参数传入的是目录就是剪切 否则重命名)
+将/usr/software/jdk1.8.0_144 文件夹剪切到/usr/local文件夹下
+mv -r  /usr/software/jdk1.8.0_144   /usr/local
+
+#修改/home/kgc/Hello.java名字 名字改为Hello2.java
+mv  /home/kgc/Hello.java   Hello2.java
+
+15 配置JDK系统环境变量
+vi /etc/profile
+
+按"i"键 进入编辑模式
+
+将以下内容拷贝到文件末尾
+export JAVA_HOME=/usr/local/jdk1.8.0_144
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+
+按"ESC"键 退出编辑模式
+按":"键  进入命令模式  wq回车
+
+source /etc/profile
+
+java -version
+
+
+16 修改某个文件的权限
+chmod命令 后面跟3个数字 
+			第一个数字:文件的拥有者对文件所有拥有的权限
+			第二个数字:与文件拥有者在同一个组中的用户对此文件所拥有的的权限
+			第三个数字:其他组的用户对此文件所拥有的的权限
+
+三个数字: 4(读)  2(写)  1(执行)
+例如:
+文件的拥有者拥有HelloWorld.java文件的 (4+2+1)	
+与文件拥有者在同一个组中的用户拥有HelloWorld.java文件的(2+1)
+其他组的用户拥有HelloWorld.java文件的(1)
+chmod 731   HelloWorld.java
+
+chmod 777 -r  /home/kgc
+
+
+17 解压文件
+tar -zxvf   解压的文件  
+tar -zxvf  /usr/software/redis-5.0.5.tar.gz  
+
+
+18 切换用户
+su  kgc
+
+
+
+常见的Linux命令
+tail命令 	查看日志, 从后
+tar命令  	解压文件
+mkdir命令	创建文件夹
+touch命令	创建文件
+vi命令		编辑文件
+chmod命令	设置权限
+su命令		切换用户
+ll命令		查看当前目录下的文件和文件夹
+
