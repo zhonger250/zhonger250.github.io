@@ -14,6 +14,8 @@ Java 学习
 
 [面试题_JVM](https://github.com/zhonger250/zhonger250.github.io/blob/main/%E9%9D%A2%E8%AF%95%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%A2%98_JVM.md)
 
+[面试题_线程](https://github.com/zhonger250/zhonger250.github.io/blob/main/%E9%9D%A2%E8%AF%95%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%A2%98_%E7%BA%BF%E7%A8%8B.md)
+
 ## Linux
 [Linux](https://github.com/zhonger250/zhonger250.github.io/tree/main/Linux)
 
