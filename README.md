@@ -4,7 +4,7 @@ Java 学习
 [![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=zhonger250)](https://github.com/anuraghazra/github-readme-stats)
 
 ## 面试题
-[要背诵的内容](%E9%9D%A2%E8%AF%95%E9%A2%98/%E8%83%8C%E8%AF%B5.md)
+[要背诵的内容](/%E9%9D%A2%E8%AF%95%E9%A2%98/%E8%83%8C%E8%AF%B5.md)
 
 [面试题整理](https://github.com/zhonger250/zhonger250.github.io/blob/main/%E9%9D%A2%E8%AF%95%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%A2%98%E6%95%B4%E7%90%86%20(3).pdf)
 
