@@ -13,9 +13,11 @@ import com.example.dto.SysRoleUpdateDTO;
 import com.example.entity.SysMenu;
 import com.example.entity.SysRole;
 import com.example.entity.SysRoleMenu;
+import com.example.entity.SysUserRole;
 import com.example.service.SysMenuService;
 import com.example.service.SysRoleMenuService;
 import com.example.service.SysRoleService;
+import com.example.service.SysUserRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -55,6 +57,9 @@ public class SysRoleController {
 
     @Resource
     private SysMenuService menuService;
+
+    @Resource
+    private SysUserRoleService sysUserRoleService;
 
     /**
      * 查询所有角色信息
@@ -174,8 +179,19 @@ public class SysRoleController {
     @ApiOperation(value = "根据主键删除信息")
     @ApiImplicitParam(name = "id", value = "主键", paramType = "path", dataType = "string")
     @CrossOrigin
-    public boolean delete(@PathVariable String id) {
+    public boolean delete(@PathVariable int id) {
+
+        checkRoleId(id);
         return this.sysRoleService.removeById(id);
+    }
+
+    private void checkRoleId(int id) {
+        LambdaQueryWrapper<SysUserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUserRole::getRid, id);
+        int count = sysUserRoleService.count(queryWrapper);
+        if (count>0){
+            throw new HttpException(ResultConstant.ROLE_USED);
+        }
     }
 
     /**
@@ -186,8 +202,10 @@ public class SysRoleController {
      */
     @DeleteMapping("/delete/all")
     @ApiOperation(value = "根据主键删除多条数据")
-    public boolean delete(List<String> ids) {
-        // todo 判断角色是否被使用, 如果被使用不能删除
+    public boolean delete(List<Integer> ids) {
+        for (int id : ids) {
+            checkRoleId(id);
+        }
         return this.sysRoleService.removeByIds(ids);
     }
 

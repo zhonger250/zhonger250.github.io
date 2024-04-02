@@ -47,6 +47,10 @@ public enum ResultConstant {
      */
     ROLE_NOTE_EXISTS(1003,"角色不存在"),
     /**
+     * 角色被使用
+     */
+    ROLE_USED(1004,"角色被使用"),
+    /**
      * 用户不存在
      */
     USER_NOT_EXIST(2001,"用户不存在"),
@@ -66,6 +70,10 @@ public enum ResultConstant {
      * 菜单类型错误
      */
     MENU_TYPE_ERROR(3004,"菜单类型错误"),
+    /**
+     * 菜单被使用
+     */
+    MENU_USED(3005,"菜单被使用"),
     ;
 
 

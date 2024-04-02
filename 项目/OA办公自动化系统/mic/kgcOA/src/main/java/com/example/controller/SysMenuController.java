@@ -9,7 +9,9 @@ import com.example.dto.RoleMenuDTO;
 import com.example.dto.SysMenuAddDTO;
 import com.example.dto.SysMenuUpdateDTO;
 import com.example.entity.SysMenu;
+import com.example.entity.SysRoleMenu;
 import com.example.service.SysMenuService;
+import com.example.service.SysRoleMenuService;
 import com.example.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -47,6 +49,9 @@ public class SysMenuController {
 
     @Resource
     private SysRoleService sysRoleService;
+
+    @Resource
+    private SysRoleMenuService sysRoleMenuService;
 
     private static void checkMenuType(Integer type) {
         if (type != SystemConstant.MenuType.CATALOG_MENU.getCode() &&
@@ -121,7 +126,6 @@ public class SysMenuController {
     public boolean switchStatus(@PathVariable Serializable id) {
         SysMenu sysMenu = checkMenuId(id);
         // 如果菜单下有子菜单, 不能禁用此菜单
-        // todo 如果菜单无论是否被角色使用, 菜单都能禁
 
         if (sysMenu.getStatus() == SystemConstant.SysMenuStatus.ENABLE.getCode()) {
             int count = sysMenuService.count(sysMenu.getId());
@@ -136,8 +140,6 @@ public class SysMenuController {
         sysMenuService.updateById(sysMenu);
         return true;
     }
-
-    // todo 根据菜单ID获得菜单下的子菜单信息(要加缓存)
 
     /**
      * 查看菜单详细信息
@@ -259,13 +261,20 @@ public class SysMenuController {
             @CacheEvict(cacheNames = "system:systemMenu", key = "#id")
     })
     public boolean delete(@PathVariable int id) {
-
         // 如果菜单下有子菜单, 就不能删
         int count = sysMenuService.count(id);
         if (count > 0) {
             throw new HttpException(ResultConstant.MENU_CANNOT_BE_DISABLED);
         }
-        // todo 删除菜单当前菜单缓存       删除整个菜单缓存
+        // 如果菜单被引用, 不能删除
+        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleMenu::getMid, id);
+        count = sysRoleMenuService.count(queryWrapper);
+        if (count > 0) {
+            throw new HttpException(ResultConstant.MENU_USED);
+        }
+
+
         return sysMenuService.removeById(id);
     }
 
@@ -283,7 +292,6 @@ public class SysMenuController {
     @CrossOrigin
     @ApiImplicitParam(name = "roleId", value = "角色Id", dataType = "int", paramType = "path", required = true)
     public List<SysMenu> toAssignMenus(@PathVariable("roleId") int roleId) {
-
         // 角色是否此存在
         if (sysRoleService.getById(roleId) == null) {
             throw new HttpException(ResultConstant.ROLE_NOTE_EXISTS);
