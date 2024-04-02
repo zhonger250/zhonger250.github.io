@@ -43,6 +43,10 @@ public enum ResultConstant {
      */
     ROLE_DESCRIPTION_NULL_ERROR(1002,"角色描述不能为空"),
     /**
+     * 角色不存在
+     */
+    ROLE_NOTE_EXISTS(1003,"角色不存在"),
+    /**
      * 用户不存在
      */
     USER_NOT_EXIST(2001,"用户不存在"),

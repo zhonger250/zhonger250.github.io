@@ -117,7 +117,6 @@
 </template>
 <script>
 import api from '@/api/system/sysMenu'
-import row from "element-ui/packages/row";
 
 // 对应的一个菜单信息
 const defaultForm = {
@@ -236,36 +235,36 @@ export default {
       // 显示对话框
       this.dialogVisible = true;
       // 禁用选择菜单类型的单选按钮
-      this.typeDisabled=false;
+      this.typeDisabled = false;
       // 清除原有的值
-      this.sysMenu=Object.assign({},defaultForm);
+      this.sysMenu = Object.assign({}, defaultForm);
       // 设置默认排序
       this.sysMenu.sort = 0;
       if (row) {
         // 菜单的父ID应该是当前目录rowId
-        this.sysMenu.parentId =row.id;
+        this.sysMenu.parentId = row.id;
         this.sysMenu.parentName = row.title
         // 在目录上添加菜单或者是在菜单上添加按钮
         if (row.type === 0) {
           // 在目录上添加菜单
           this.dialogTitle = '添加子菜单';
-          this.sysMenu.type=1;
+          this.sysMenu.type = 1;
           this.typeDisabled = false
-                this.type0Disabled = false
-                this.type1Disabled = false
-                this.type2Disabled = true
+          this.type0Disabled = false
+          this.type1Disabled = false
+          this.type2Disabled = true
 
         } else if (row.type === 1) {
           // 在菜单上添加按钮
           this.dialogTitle = '添加按钮';
-          this.sysMenu.type=2;
+          this.sysMenu.type = 2;
           console.log(this.dialogTitle);
           this.typeDisabled = true
         }
       } else {
         // 添加目录
         this.dialogTitle = '添加目录';
-        this.sysMenu.type=0;
+        this.sysMenu.type = 0;
         console.log(this.dialogTitle);
         // 目录父Id是0
         this.sysMenu.parentId = 0;

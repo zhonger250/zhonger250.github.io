@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.constant.ResultConstant;
 import com.example.common.constant.SystemConstant;
 import com.example.common.exception.HttpException;
+import com.example.common.utils.MenuUtil;
 import com.example.dto.SysMenuAddDTO;
 import com.example.dto.SysMenuUpdateDTO;
 import com.example.entity.SysMenu;
 import com.example.service.SysMenuService;
+import com.example.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +26,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @Author: zhonger250
@@ -42,6 +43,9 @@ public class SysMenuController {
      */
     @Resource
     private SysMenuService sysMenuService;
+
+    @Resource
+    private SysRoleService sysRoleService;
 
     private static void checkMenuType(Integer type) {
         if (type != SystemConstant.MenuType.CATALOG_MENU.getCode() &&
@@ -63,12 +67,8 @@ public class SysMenuController {
     public List<SysMenu> selectAll() {
         // 获得所有菜单
         List<SysMenu> sysMenuList = sysMenuService.list();
-        // 获得所有的父级菜单
-        List<SysMenu> result = sysMenuList.stream().filter(sysMenu -> sysMenu.getParentId() == 0).collect(Collectors.toList());
-        // 找到每个父级菜单下的子菜单
-        for (SysMenu parentMenu : result) {
-            getChildMenu(parentMenu, sysMenuList);
-        }
+        List<SysMenu> result = MenuUtil.tree(sysMenuList);
+
 
         /*
          排序,
@@ -268,6 +268,29 @@ public class SysMenuController {
         return sysMenuService.removeById(id);
     }
 
+    /**
+     * 1.查询出所有的菜单信息,
+     * 2.再根据角色ID查询角色对应的ID,
+     * 3.如果角色拥有某个菜单,对应的所有菜单集合中的菜单的状态是被选中的
+     * 4.组成一个树形结构的json格式的数据
+     *
+     * @param roleId 角色ID
+     * @return
+     */
+    @GetMapping("/toAssignMenus/{roleId}")
+    @ApiOperation(value = "查询角色对应的菜单以及所有的菜单信息")
+    @CrossOrigin
+    @ApiImplicitParam(name = "roleId", value = "角色Id", dataType = "int", paramType = "path", required = true)
+    public List<SysMenu> toAssignMenus(@PathVariable("roleId") int roleId) {
+
+        if (sysRoleService.getById(roleId)==null){
+            throw new HttpException(ResultConstant.ROLE_NOTE_EXISTS);
+        }
+
+        return sysMenuService.getMenuListByRoleID(roleId);
+    }
+
+
     private SysMenu checkMenuId(Serializable id) {
         // 根据ID获得当前菜单的信息
         SysMenu sysMenu = this.sysMenuService.getById(id);
@@ -279,7 +302,7 @@ public class SysMenuController {
     }
 
     private void checkMenuParentId(int parentId) {
-        if (parentId!=0){
+        if (parentId != 0) {
             SysMenu parentMenu = sysMenuService.getById(parentId);
             if (parentMenu == null) {
                 throw new HttpException(ResultConstant.MENU_PARENT_NOT_EXIST);

@@ -1,19 +1,15 @@
 package com.example.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.io.Serializable;
-import java.util.List;
-
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.*;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: zhonger250
@@ -26,7 +22,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @Builder
 @TableName(value = "sys_menu")
-@SuppressWarnings("serial")
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class SysMenu extends Model<SysMenu> implements Serializable {
 
@@ -142,6 +137,12 @@ public class SysMenu extends Model<SysMenu> implements Serializable {
      */
     @TableField(exist = false)
     private List<SysMenu> children = new ArrayList<>();
+
+    /**
+     * 菜单是否被选中
+     */
+    @TableField(exist = false)
+    private boolean isChecked;
 
 
 }

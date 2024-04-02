@@ -195,16 +195,16 @@ export default {
     edit(id) {
       this.dialogVisible = true;
       api.getUserInfo(id).then(res => {
-        this.sysUser.id=res.data.id;
-        this.sysUser.name=res.data.name;
-        this.sysUser.realName=res.data.realName;
-        this.sysUser.address=res.data.address;
-        this.sysUser.birthday=res.data.birthday;
-        this.sysUser.deptId=res.data.deptId;
-        this.sysUser.hiredate=res.data.hiredate;
-        this.sysUser.job=res.data.job;
-        this.sysUser.phone=res.data.phone;
-        this.sysUser.version=res.data.version;
+        this.sysUser.id = res.data.id;
+        this.sysUser.name = res.data.name;
+        this.sysUser.realName = res.data.realName;
+        this.sysUser.address = res.data.address;
+        this.sysUser.birthday = res.data.birthday;
+        this.sysUser.deptId = res.data.deptId;
+        this.sysUser.hiredate = res.data.hiredate;
+        this.sysUser.job = res.data.job;
+        this.sysUser.phone = res.data.phone;
+        this.sysUser.version = res.data.version;
         this.allRoles = res.data.allRoles;
         this.userRoleIds = res.data.userRoleIds;
       });
