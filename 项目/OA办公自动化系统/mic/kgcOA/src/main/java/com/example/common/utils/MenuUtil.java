@@ -3,6 +3,7 @@ package com.example.common.utils;
 import com.example.entity.SysMenu;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +37,7 @@ public class MenuUtil {
     private static void getChildren(SysMenu parentMenu, List<SysMenu> sysMenuList) {
         for (SysMenu menu : sysMenuList) {
             // 如果菜单中的Id等于父菜单的ID
-            if (menu.getParentId() == parentMenu.getId()) {
+            if (Objects.equals(menu.getParentId(), parentMenu.getId())) {
                 // 菜单就是父菜单的子菜单
                 parentMenu.getChildren().add(menu);
                 // 找子菜单的子菜单

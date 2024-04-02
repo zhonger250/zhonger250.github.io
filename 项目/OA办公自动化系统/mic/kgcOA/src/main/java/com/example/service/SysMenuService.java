@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.dto.RoleMenuDTO;
 import com.example.entity.SysMenu;
 
 import java.util.List;
@@ -27,5 +28,12 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param roleId 角色ID
      */
     List<SysMenu> getMenuListByRoleID(int roleId);
+
+    /**
+     * 给角色分配菜单
+     * @param roleMenuDTO 角色和菜单信息
+     * @return 是否分配成功
+     */
+    boolean doAssignMenu(RoleMenuDTO roleMenuDTO);
 
 }

@@ -11,10 +11,4 @@ import com.example.entity.SysRoleMenu;
  */
 public interface SysRoleMenuService extends IService<SysRoleMenu> {
 
-    /**
-     * 给角色分配菜单权限
-     * @param menuDTO 角色ID及菜单ID
-     * @return 是否分配成功
-     */
-    boolean distributionMenu(DistributionMenuDTO menuDTO);
 }

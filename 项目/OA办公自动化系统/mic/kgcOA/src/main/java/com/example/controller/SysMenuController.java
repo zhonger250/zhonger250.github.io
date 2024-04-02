@@ -5,6 +5,7 @@ import com.example.common.constant.ResultConstant;
 import com.example.common.constant.SystemConstant;
 import com.example.common.exception.HttpException;
 import com.example.common.utils.MenuUtil;
+import com.example.dto.RoleMenuDTO;
 import com.example.dto.SysMenuAddDTO;
 import com.example.dto.SysMenuUpdateDTO;
 import com.example.entity.SysMenu;
@@ -283,11 +284,19 @@ public class SysMenuController {
     @ApiImplicitParam(name = "roleId", value = "角色Id", dataType = "int", paramType = "path", required = true)
     public List<SysMenu> toAssignMenus(@PathVariable("roleId") int roleId) {
 
-        if (sysRoleService.getById(roleId)==null){
+        // 角色是否此存在
+        if (sysRoleService.getById(roleId) == null) {
             throw new HttpException(ResultConstant.ROLE_NOTE_EXISTS);
         }
 
         return sysMenuService.getMenuListByRoleID(roleId);
+    }
+
+    @PutMapping("/doAssignMenu")
+    @ApiOperation("给角色分配菜单")
+    @CrossOrigin
+    public boolean doAssignMenu(@RequestBody RoleMenuDTO roleMenuDTO) {
+        return sysMenuService.doAssignMenu(roleMenuDTO);
     }
 
 

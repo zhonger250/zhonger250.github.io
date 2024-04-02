@@ -25,22 +25,4 @@ import java.util.List;
 @Service("sysRoleMenuService")
 public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRoleMenu> implements SysRoleMenuService {
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public boolean distributionMenu(DistributionMenuDTO menuDTO) {
-        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
-        // 根据角色ID删除角色原来拥有的菜单
-        queryWrapper.eq(SysRoleMenu::getRid,menuDTO.getRoleId());
-        baseMapper.delete(queryWrapper);
-        List<SysRoleMenu> sysRoleMenuList = new ArrayList<>();
-        // 添加角色拥有的最新菜单
-        for (Integer menuId : menuDTO.getMenuIds()) {
-            SysRoleMenu sysRoleMenu = new SysRoleMenu();
-            sysRoleMenu.setRid(menuDTO.getRoleId());
-            sysRoleMenu.setMid(menuId);
-            sysRoleMenuList.add(sysRoleMenu);
-        }
-        saveBatch(sysRoleMenuList);
-        return true;
-    }
 }

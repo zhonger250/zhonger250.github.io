@@ -118,13 +118,6 @@ public class SysRoleController {
         return  menuList;
     }
 
-    @PutMapping("/distributionMenu")
-    @ApiOperation(value = "给角色分配菜单权限")
-    @CrossOrigin
-    public boolean distributionMenu(@RequestBody DistributionMenuDTO distributionMenuDTO){
-        return roleMenuService.distributionMenu(distributionMenuDTO);
-    }
-
 
 
     /**
