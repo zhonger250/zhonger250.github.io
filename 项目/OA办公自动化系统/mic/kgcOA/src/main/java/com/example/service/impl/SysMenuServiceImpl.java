@@ -1,25 +1,20 @@
 package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.common.constant.ResultConstant;
 import com.example.common.constant.SystemConstant;
-import com.example.common.exception.HttpException;
 import com.example.common.utils.MenuUtil;
 import com.example.dto.RoleMenuDTO;
+import com.example.entity.SysMenu;
 import com.example.entity.SysRoleMenu;
 import com.example.mapper.SysMenuMapper;
-import com.example.entity.SysMenu;
 import com.example.service.SysMenuService;
 import com.example.service.SysRoleMenuService;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,13 +46,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> sysMenuList = baseMapper.selectList(queryWrapper);
         // 根据角色ID 查询角色对应的菜单信息(sys_role_menu)
         LambdaQueryWrapper<SysRoleMenu> queryWrapper2 = new LambdaQueryWrapper<>();
-        queryWrapper2.eq(SysRoleMenu::getRid,roleId);
+        queryWrapper2.eq(SysRoleMenu::getRid, roleId);
         List<SysRoleMenu> sysRoleMenuList = sysRoleMenuService.list(queryWrapper2);
         // 遍历角色菜单信息集合, 如果角色拥有某个菜单, 所有菜单集合中的对应的菜单就应该被选中
         for (SysRoleMenu sysRoleMenu : sysRoleMenuList) {
             for (SysMenu sysMenu : sysMenuList) {
-                if (Objects.equals(sysMenu.getId(), sysRoleMenu.getMid())){
-                        sysMenu.setChecked(true);
+                if (Objects.equals(sysMenu.getId(), sysRoleMenu.getMid())) {
+                    sysMenu.setChecked(true);
                 }
             }
         }
@@ -71,7 +66,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public boolean doAssignMenu(RoleMenuDTO roleMenuDTO) {
         // 根据角色Id删除角色原有的菜单信息
         LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysRoleMenu::getRid,roleMenuDTO.getRoleId());
+        queryWrapper.eq(SysRoleMenu::getRid, roleMenuDTO.getRoleId());
         sysRoleMenuService.remove(queryWrapper);
 
         // 添加角色对应的菜单的信息

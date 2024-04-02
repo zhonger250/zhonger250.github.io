@@ -1,20 +1,11 @@
 package com.example.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.dto.DistributionMenuDTO;
-import com.example.mapper.SysRoleMenuMapper;
 import com.example.entity.SysRoleMenu;
+import com.example.mapper.SysRoleMenuMapper;
 import com.example.service.SysRoleMenuService;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author: zhonger250

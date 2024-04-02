@@ -8,7 +8,6 @@ import com.example.common.annotation.Idempotent;
 import com.example.common.constant.ResultConstant;
 import com.example.common.exception.HttpException;
 import com.example.common.utils.RedisUtil;
-import com.example.dto.DistributionMenuDTO;
 import com.example.dto.SysRoleAddDTO;
 import com.example.dto.SysRoleUpdateDTO;
 import com.example.entity.SysMenu;
@@ -30,7 +29,6 @@ import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: zhonger250
@@ -73,8 +71,8 @@ public class SysRoleController {
     /**
      * 分页查询角色信息
      *
-     * @param current 当前页
-     * @param pageSize    每页显示条数
+     * @param current  当前页
+     * @param pageSize 每页显示条数
      * @return 分页的数据
      */
     @GetMapping("/page")
@@ -97,27 +95,27 @@ public class SysRoleController {
 
     /**
      * 得到角色权限信息
+     *
      * @param id 角色ID
      * @return 权限列表
      */
     @GetMapping("/RoleMenuInfo/{id}")
     @CrossOrigin
     @ApiOperation(value = "角色权限信息")
-    @ApiImplicitParam(name = "id",value = "角色ID",dataType = "int",paramType = "path")
-    public List<SysMenu> getRoleMenuInfo(@PathVariable Serializable id){
+    @ApiImplicitParam(name = "id", value = "角色ID", dataType = "int", paramType = "path")
+    public List<SysMenu> getRoleMenuInfo(@PathVariable Serializable id) {
         LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysRoleMenu::getRid,id);
+        queryWrapper.eq(SysRoleMenu::getRid, id);
         List<SysRoleMenu> list = roleMenuService.list(queryWrapper);
         List<SysMenu> menuList = new ArrayList<>();
         for (SysRoleMenu sysRoleMenu : list) {
             SysMenu sysMenu = menuService.getById(sysRoleMenu.getMid());
-            if (sysMenu!=null){
+            if (sysMenu != null) {
                 menuList.add(sysMenu);
             }
         }
-        return  menuList;
+        return menuList;
     }
-
 
 
     /**
@@ -196,9 +194,9 @@ public class SysRoleController {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据角色ID获取角色信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "角色ID",dataType = "int",paramType = "path")
+            @ApiImplicitParam(name = "id", value = "角色ID", dataType = "int", paramType = "path")
     })
-    public SysRole detail(@PathVariable Serializable id){
+    public SysRole detail(@PathVariable Serializable id) {
         return this.sysRoleService.getById(id);
     }
 }
