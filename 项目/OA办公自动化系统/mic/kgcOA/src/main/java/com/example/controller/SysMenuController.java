@@ -126,7 +126,6 @@ public class SysMenuController {
     public boolean switchStatus(@PathVariable Serializable id) {
         SysMenu sysMenu = checkMenuId(id);
         // 如果菜单下有子菜单, 不能禁用此菜单
-
         if (sysMenu.getStatus() == SystemConstant.SysMenuStatus.ENABLE.getCode()) {
             int count = sysMenuService.count(sysMenu.getId());
             if (count > 0) {

@@ -24,6 +24,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +72,7 @@ public class SysRoleController {
     @GetMapping("/list")
     @ApiOperation(value = "查询所有数据")
     @CrossOrigin
+    @Cacheable(cacheNames = "system:systemRole#1",key = "'list'")
     public List<SysRole> selectAll() {
         return sysRoleService.list();
     }
@@ -88,6 +92,7 @@ public class SysRoleController {
             @ApiImplicitParam(name = "pageSize", value = "每页显示条数", defaultValue = "5", dataType = "int", paramType = "query")
     })
     @CrossOrigin
+//    @Cacheable(cacheNames = "system:systemRole#1",key = "#current")
     public IPage<SysRole> selectPage(@RequestParam(defaultValue = "1") int current,
                                      @RequestParam(defaultValue = "5") int pageSize,
                                      @RequestParam(defaultValue = "") String roleName) {
@@ -108,6 +113,7 @@ public class SysRoleController {
     @CrossOrigin
     @ApiOperation(value = "角色权限信息")
     @ApiImplicitParam(name = "id", value = "角色ID", dataType = "int", paramType = "path")
+    @Cacheable(cacheNames = "system:systemRole:RoleMenuInfo#1",key = "#id")
     public List<SysMenu> getRoleMenuInfo(@PathVariable Serializable id) {
         LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysRoleMenu::getRid, id);
@@ -133,6 +139,7 @@ public class SysRoleController {
     @ApiOperation(value = "新增数据")
     @CrossOrigin
     @Idempotent
+    @CacheEvict(value = "system:systemRole",key = "'list'")
     public boolean insert(@RequestBody SysRoleAddDTO sysRoleDTO) {
         if (StrUtil.isEmpty(sysRoleDTO.getRoleName())) {
             throw new HttpException(ResultConstant.ROLE_NAME_NULL_ERROR);
@@ -155,6 +162,10 @@ public class SysRoleController {
     @PutMapping("/update")
     @ApiOperation(value = "修改数据")
     @CrossOrigin
+    @Caching(evict={
+            @CacheEvict(cacheNames = "system:systemRole",key = "'list'"),
+            @CacheEvict(cacheNames = "system:systemRole",key = "#sysRoleDTO.id")
+    })
     public boolean update(@RequestBody SysRoleUpdateDTO sysRoleDTO) {
         if (StrUtil.isEmpty(sysRoleDTO.getRoleName())) {
             throw new HttpException(ResultConstant.ROLE_NAME_NULL_ERROR);
@@ -179,6 +190,10 @@ public class SysRoleController {
     @ApiOperation(value = "根据主键删除信息")
     @ApiImplicitParam(name = "id", value = "主键", paramType = "path", dataType = "string")
     @CrossOrigin
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "system:systemRole",key = "'list'"),
+            @CacheEvict(cacheNames = "system:systemRole",key = "#id")
+    })
     public boolean delete(@PathVariable int id) {
 
         checkRoleId(id);
@@ -202,6 +217,11 @@ public class SysRoleController {
      */
     @DeleteMapping("/delete/all")
     @ApiOperation(value = "根据主键删除多条数据")
+    @CrossOrigin
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "system:systemRole",key = "'list'"),
+            @CacheEvict(cacheNames = "system:systemRole",key = "#ids")
+    })
     public boolean delete(List<Integer> ids) {
         for (int id : ids) {
             checkRoleId(id);
@@ -214,6 +234,8 @@ public class SysRoleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色ID", dataType = "int", paramType = "path")
     })
+    @CrossOrigin
+    @Cacheable(cacheNames = "system:systemRole",key = "#id")
     public SysRole detail(@PathVariable Serializable id) {
         return this.sysRoleService.getById(id);
     }
