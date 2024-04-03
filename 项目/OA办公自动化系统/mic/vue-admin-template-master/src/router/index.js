@@ -86,6 +86,14 @@ export const constantRoutes = [
           title: '菜单管理',
           icon: 'el-icon-s-help'
         }
+      },{
+        th: 'assignMenu',
+        component: () => import('@/views/system/sysRole/assignMenu'),
+        meta: {
+          title: '分配菜单',
+          activeMenu:"/system/sysRole"
+        },
+        hidden: true
       },
     ]
   },

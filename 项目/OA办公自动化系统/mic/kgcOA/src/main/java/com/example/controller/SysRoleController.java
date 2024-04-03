@@ -220,9 +220,9 @@ public class SysRoleController {
     @CrossOrigin
     @Caching(evict = {
             @CacheEvict(cacheNames = "system:systemRole",key = "'list'"),
-            @CacheEvict(cacheNames = "system:systemRole",key = "#ids")
     })
-    public boolean delete(List<Integer> ids) {
+//    @ApiImplicitParam(name = "ids", value = "角色IDs", dataType = "list", paramType = "query",allowMultiple = true)
+    public boolean delete(@RequestBody List<Integer> ids) {
         for (int id : ids) {
             checkRoleId(id);
         }

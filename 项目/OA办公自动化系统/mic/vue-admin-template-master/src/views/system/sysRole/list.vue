@@ -27,6 +27,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" title="修改" @click="edit(scope.row.id)"/>
           <el-button type="danger" icon="el-icon-delete" size="mini" title="删除" @click="del(scope.row.id)"/>
+          <el-button type="warning" icon="el-icon-menu" size="mini" title="分配管理" @click="assignMenu(scope.row.id)"/>
         </template>
       </el-table-column>
     </el-table>
@@ -82,6 +83,10 @@ export default {
     this.fetchData(1);
   },
   methods: {
+    assignMenu(row){
+      console.log(row.id);
+      console.log(row.roleName);
+    },
     fetchData(page = 1) {
       // 得到当前页数
       this.searchObj.current = page;
