@@ -42,9 +42,9 @@ public class IdempotentInterceptor extends WebContentInterceptor {
                 // 过期时间单位
                 TimeUnit unit = annotation.unit();
                 // 获得用户请求中的令牌
-                String parameter = request.getHeader("token");
+                String parameter = request.getHeader("idempotentToken");
                 if (StrUtil.isEmpty(parameter)) {
-                    parameter = request.getParameter("token");
+                    parameter = request.getParameter("idempotentToken");
                 }
                 // 判断令牌是否存在
                 if (StrUtil.isEmpty(parameter) || redisUtil.hasKey(parameter)) {

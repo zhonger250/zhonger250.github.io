@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author: zhonger250
@@ -142,7 +143,18 @@ public class SysMenu extends Model<SysMenu> implements Serializable {
      * 菜单是否被选中
      */
     @TableField(exist = false)
-    private boolean isChecked;
+    private Boolean isChecked;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SysMenu sysMenu = (SysMenu) o;
+        return Objects.equals(id, sysMenu.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

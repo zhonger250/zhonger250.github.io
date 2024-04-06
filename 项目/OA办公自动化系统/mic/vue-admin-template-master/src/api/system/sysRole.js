@@ -43,4 +43,21 @@ export default {
     });
   },
 
+  // 查询角色对应的菜单以及所有的菜单信息
+  assignMenu(roleId){
+    return new request({
+      url:`/vue-admin/system/sysMenu/toAssignMenus/${roleId}`,
+      method:"get"
+    });
+  },
+
+  // 保存角色对应的菜单信息
+  doAssignMenu(roleMenu){
+    return new request({
+      url:`/vue-admin/system/sysMenu/doAssignMenu`,
+      method:"put",
+      data:roleMenu
+    });
+  }
+
 }

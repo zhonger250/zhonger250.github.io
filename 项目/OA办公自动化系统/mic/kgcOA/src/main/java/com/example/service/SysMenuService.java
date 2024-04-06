@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dto.RoleMenuDTO;
+import com.example.entity.RouterVO;
 import com.example.entity.SysMenu;
 
 import java.util.List;
@@ -36,4 +37,19 @@ public interface SysMenuService extends IService<SysMenu> {
      */
     boolean doAssignMenu(RoleMenuDTO roleMenuDTO);
 
+
+    /**
+     * 获得用户的菜单信息
+     * @param userId 用户ID
+     * @return 菜单信息(路由的集合)
+     */
+    List<RouterVO> getMenuRouterVO(Integer userId);
+
+
+    /**
+     * 获得用户按钮的权限表示
+     * @param userId 用户ID
+     * @return 权限集合
+     */
+    List<String> getButtonPermission(Integer userId);
 }

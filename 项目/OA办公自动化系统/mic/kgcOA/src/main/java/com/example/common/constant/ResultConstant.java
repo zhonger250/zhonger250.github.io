@@ -25,6 +25,15 @@ public enum ResultConstant {
     ERROR(500,"服务器出现异常"),
 
     /**
+     * 未登录
+     */
+    NO_LOGIN(403,"未登录"),
+    /**
+     * 登录失败
+     */
+    LOGIN_ERROR(401,"登录失败"),
+
+    /**
      * 请求重复提交
      */
     REPEAT_COMMIT(1000,"重复提交"),

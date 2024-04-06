@@ -27,7 +27,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" title="修改" @click="edit(scope.row.id)"/>
           <el-button type="danger" icon="el-icon-delete" size="mini" title="删除" @click="del(scope.row.id)"/>
-          <el-button type="warning" icon="el-icon-menu" size="mini" title="分配管理" @click="assignMenu(scope.row.id)"/>
+          <el-button type="warning" icon="el-icon-delete" size="mini" title="分配管理" @click="assignMenu(scope.row)"/>
         </template>
       </el-table-column>
     </el-table>
@@ -83,8 +83,9 @@ export default {
     this.fetchData(1);
   },
   methods: {
-    assignMenu(row){
+    assignMenu(row) {
       console.log(row.id);
+      this.$router.push('/system/assignMenu?id=' + row.id + "&roleName=" + row.roleName)
       console.log(row.roleName);
     },
     fetchData(page = 1) {
@@ -144,88 +145,6 @@ export default {
       this.dialogVisible = false;
     }
   },
-
-  // data() {
-  //   return {
-  //     searchObj: {
-  //       roleName: '',
-  //       current: '1',
-  //     },
-  //     total: 0,
-  //     list: [],
-  //     dialogVisible: false,
-  //     sysRole: {
-  //       id: "",
-  //       roleName: "",
-  //       description: "",
-  //       version: 0
-  //     }
-  //   }
-  // }, created() {
-  //   this.fetchData(1);
-  // },
-  // methods: {
-  //   add() {
-  //     // 显示对话框
-  //     this.dialogVisible = true;
-  //     // 清空对话框原有值
-  //     this.sysRole = {};
-  //     //
-  //   },
-  //   del(id) {
-  //     this.$confirm("是否删除此条数据",{
-  //       confirmButtonText:"确定",
-  //       cancelButtonText:"取消",
-  //       type:"warning",
-  //     }).then(()=>{
-  //       // console.log("!!!!!!!!!!");
-  //       api.del(id);
-  //     }).then(res=>{
-  //       this.$message.success("删除角色成功");
-  //       this.fetchData(1);
-  //     });
-  //
-  //   },
-  //   edit(id) {
-  //     // 显示对话框
-  //     this.dialogVisible = true;
-  //     // 从后端取值然后赋值给对话框
-  //     api.detail(id).then(res => {
-  //       this.sysRole.id = res.data.id;
-  //       this.sysRole.roleName = res.data.roleName;
-  //       this.sysRole.description = res.data.description;
-  //       this.sysRole.version = res.data.version;
-  //     })
-  //   },
-  //   saveOrUpdate() {
-  //     // 新增或者更新控制
-  //     if (!this.sysRole.id) {
-  //       api.save(this.sysRole).then(res => {
-  //         // 新增成功的提示信息
-  //         this.$message.success("新增成功");
-  //         // 重新展示第一页的数据
-  //         this.fetchData(1);
-  //       });
-  //     } else {
-  //       api.update(this.sysRole).then(res=>{
-  //         this.$message.success("更新数据成功");
-  //         this.fetchData(1);
-  //       });
-  //     }
-  //     // 显示对话框
-  //     this.dialogVisible = false;
-  //   },
-  //   fetchData(page = 1) {
-  //     // 得到当前页数
-  //     this.searchObj.current = page;
-  //     // 按照条件获得当前页的数据
-  //     api.getRolePage(this.searchObj).then(res => {
-  //       this.list = res.data.records;
-  //       this.total = res.data.total;
-  //       this.searchObj.current = res.data.current;
-  //     })
-  //   }
-  // }
 }
 </script>
 
