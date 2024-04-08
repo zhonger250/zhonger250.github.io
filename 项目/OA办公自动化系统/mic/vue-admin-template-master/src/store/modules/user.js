@@ -6,7 +6,10 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+
+    buttons: [], // 新增
+    menus: '' //新增
   }
 }
 
@@ -24,15 +27,23 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  // 新增
+  SET_BUTTONS: (state, buttons) => {
+    state.buttons = buttons
+  },
+  // 新增
+  SET_MENUS: (state, menus) => {
+    state.menus = menus
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { account, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ account: account.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
@@ -44,25 +55,27 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+ getInfo({ commit, state }) {
+   return new Promise((resolve, reject) => {
+     getInfo().then(response => {
+       const { data } = response
 
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
+       if (!data) {
+         return reject('Verification failed, please Login again.')
+       }
 
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
+       const { name, avatar } = data
+       commit('SET_NAME', name)
+       commit('SET_AVATAR', avatar)
+	   //新增
+       commit("SET_BUTTONS", data.buttons)
+       commit("SET_MENUS", data.routers)
+       resolve(data)
+     }).catch(error => {
+       reject(error)
+     })
+   })
+ },
 
   // user logout
   logout({ commit, state }) {

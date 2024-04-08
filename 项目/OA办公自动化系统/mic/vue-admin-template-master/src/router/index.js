@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-/* Layout */
-import Layout from '@/layout'
 
 Vue.use(Router)
+
+/* Layout */
+import Layout from '@/layout'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -50,62 +51,17 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: {title: 'Dashboard', icon: 'dashboard'}
+      meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
+  
 
-  {
-    path: '/system',
-    component: Layout,
-    meta: {
-      title: '系统管理',
-      icon: 'el-icon-s-tools'
-    },
-    alwaysShow: true,
-    children: [
-      {
-        path: 'sysRole',
-        component: () => import('@/views/system/sysRole/list'),
-        meta: {
-          title: '角色管理',
-          icon: 'el-icon-s-help'
-        },
-      },
-      {
-        path: 'sysUser',
-        component: () => import('@/views/system/sysUser/list'),
-        meta: {
-          title: '用户管理',
-          icon: 'el-icon-s-help'
-        }
-      },
-      {
-        path: 'sysMenu',
-        component: () => import('@/views/system/sysMenu/list'),
-        meta: {
-          title: '菜单管理',
-          icon: 'el-icon-s-help'
-        }
-      }, {
-        path: 'assignMenu',
-        component: () => import('@/views/system/sysRole/assignMenu'),
-        meta: {
-          title: '分配菜单',
-          activeMenu: "/system/sysRole"
-        },
-        hidden: true
-      },
-    ]
-  },
-
-
-  // 404 page must be placed at the end !!!
-  {path: '*', redirect: '/404', hidden: true}
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({y: 0}),
+  scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
 

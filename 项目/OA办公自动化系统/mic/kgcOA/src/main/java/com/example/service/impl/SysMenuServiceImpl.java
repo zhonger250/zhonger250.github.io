@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.constant.SystemConstant;
 import com.example.common.utils.MenuUtil;
 import com.example.dto.RoleMenuDTO;
-import com.example.entity.RouterVO;
-import com.example.entity.SysMenu;
-import com.example.entity.SysRoleMenu;
-import com.example.entity.SysUserRole;
+import com.example.entity.*;
 import com.example.mapper.SysMenuMapper;
 import com.example.mapper.SysUserRoleMapper;
 import com.example.service.SysMenuService;
@@ -49,9 +46,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             // 每个sysMenu都是一个routerVO对象
             RouterVO routerVO = new RouterVO();
             routerVO.setPath(sysMenu.getPath());
-            routerVO.setIcon(sysMenu.getIcon());
-            routerVO.setTitle(sysMenu.getTitle());
+
             routerVO.setComponent(sysMenu.getComponent());
+            Meta meta = new Meta();
+            meta.setIcon(sysMenu.getIcon());
+            meta.setTitle(sysMenu.getTitle());
+            routerVO.setMeta(meta);
             // 判断当前菜单是否是按钮
             if (sysMenu.getType() == SystemConstant.MenuType.BUTTON.getCode()) {
                 // 如果当前菜单是按钮, 有一种按钮也是要分配路由地址的, 例如 分配菜单按钮
@@ -107,7 +107,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return MenuUtil.tree(sysMenuList);
     }
 
-    @Transactional()
+    @Transactional(readOnly = true)
     @Override
     public boolean doAssignMenu(RoleMenuDTO roleMenuDTO) {
         // 根据角色Id删除角色原有的菜单信息

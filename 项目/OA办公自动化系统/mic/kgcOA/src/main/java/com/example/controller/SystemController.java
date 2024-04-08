@@ -52,6 +52,11 @@ public class SystemController {
     @Resource
     private SysUserService sysUserService;
 
+    public static void main(String[] args) {
+        String s = SecureUtil.md5("123456");
+        System.out.println(s);
+    }
+
 
     @PostMapping("/user/login")
     @ApiOperation(value = "登录接口")
@@ -95,19 +100,25 @@ public class SystemController {
         // 获得用户的真实名字
         SysUser sysUser = sysUserService.getById(userId);
         // 根据用户传入的令牌, 获得此用户拥有的菜单组成菜单结构(进阶:组装成路由结构)  启用的
-        List<RouterVO> routerVOList = sysMenuService.getMenuRouterVO(Integer.parseInt(userId));
+        List<RouterVO> routerVOList = null;
+        if (userId != null) {
+            routerVOList = sysMenuService.getMenuRouterVO(Integer.parseInt(userId));
+        }
 
 
         // 根据用户传入的令牌, 获得此用户拥有的按钮上的权限表示符     启用的
-        List<String> buttonPermission = sysMenuService.getButtonPermission(Integer.parseInt(userId));
+        List<String> buttonPermission = null;
+        if (userId != null) {
+            buttonPermission = sysMenuService.getButtonPermission(Integer.parseInt(userId));
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("roles", "['admin']");
         map.put("introduction", "'I am a super administrator'");
         map.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
         map.put("name", sysUser.getRealName());
-        map.put("routerVOList",routerVOList);
-        map.put("permission",buttonPermission);
+        map.put("routers",routerVOList);
+        map.put("buttons",buttonPermission);
 
         //
         // 得到用户Id

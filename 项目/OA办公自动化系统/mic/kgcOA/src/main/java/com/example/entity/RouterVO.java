@@ -27,14 +27,6 @@ public class RouterVO {
      */
     private String component;
     /**
-     * 标题
-     */
-    private String title;
-    /**
-     * 图标
-     */
-    private String icon;
-    /**
      * 子菜单是否一直展示
      */
     private boolean alwaysShow;
@@ -46,4 +38,8 @@ public class RouterVO {
      * 是否显示
      */
     private boolean hidden;
+    /**
+     * 摘要信息
+     */
+    private Meta meta;
 }
