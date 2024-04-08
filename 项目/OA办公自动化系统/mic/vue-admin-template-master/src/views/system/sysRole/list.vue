@@ -25,9 +25,12 @@
       <el-table-column prop="description" label="角色描述" align="center"/>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" size="mini" title="修改" @click="edit(scope.row.id)"/>
-          <el-button type="danger" icon="el-icon-delete" size="mini" title="删除" @click="del(scope.row.id)"/>
-          <el-button type="warning" icon="el-icon-delete" size="mini" title="分配管理" @click="assignMenu(scope.row)"/>
+          <el-button type="primary" icon="el-icon-edit" size="mini" title="修改"
+                     :disabled="$hasBP('sysRole::update')===false" @click="edit(scope.row.id)"/>
+          <el-button type="danger" icon="el-icon-delete" size="mini" title="删除"
+                     :disabled="$hasBP('sysRole::delete')===false" @click="del(scope.row.id)"/>
+          <el-button type="warning" icon="el-icon-delete" size="mini" title="分配管理"
+                     :disabled="$hasBP('sysRole::assignMenu')===false" @click="assignMenu(scope.row)"/>
         </template>
       </el-table-column>
     </el-table>
@@ -85,7 +88,7 @@ export default {
   methods: {
     assignMenu(row) {
       console.log(row.id);
-      this.$router.push('/system/assignMenu?id=' + row.id + "&roleName=" + row.roleName)
+      this.$router.push('/system/sysRole/assignMenu?id=' + row.id + "&roleName=" + row.roleName)
       console.log(row.roleName);
     },
     fetchData(page = 1) {
