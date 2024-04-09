@@ -92,7 +92,7 @@
           <el-input v-model="sysMenu.component" placeholder="请输入组件路径"/>
         </el-form-item>
         <el-form-item v-if="sysMenu.type === 2">
-          <el-input v-model="sysMenu.perms" placeholder="请输入权限标识" maxlength="100"/>
+          <el-input v-model="sysMenu.permission" placeholder="请输入权限标识" maxlength="100"/>
           <span slot="label">
             <el-tooltip content="控制器中定义的权限字符，如：
             @PreAuthorize(hasAuthority('bnt.sysRole.list'))" placement="top">
