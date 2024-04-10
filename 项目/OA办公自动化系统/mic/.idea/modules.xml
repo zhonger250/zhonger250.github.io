@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/kgcOA/kgcOA.iml" filepath="$PROJECT_DIR$/kgcOA/kgcOA.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/mic.iml" filepath="$PROJECT_DIR$/.idea/mic.iml" />
     </modules>
   </component>

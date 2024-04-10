@@ -10,5 +10,9 @@
         <module name="kgcOA" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common" target="1.8" />
+      <module name="system" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
