@@ -39,14 +39,14 @@ public class SwaggerConfig {
 
     private List<ApiKey> security() {
         List<ApiKey> list=new ArrayList<>();
-        ApiKey apiKey= new ApiKey("Authorization", "Authorization", "header");
+        ApiKey apiKey= new ApiKey("token", "token", "header");
         list.add(apiKey);
         return list;
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("文档标题")
-                .contact(new Contact("zhonger250", "zhonger250.github.io", ""))
+                .contact(new Contact("zhonger250", "zhonger250.github.io", "1637211792@qq.com"))
                 .description("描述信息")
                 .version("v1.0")
                 .build();

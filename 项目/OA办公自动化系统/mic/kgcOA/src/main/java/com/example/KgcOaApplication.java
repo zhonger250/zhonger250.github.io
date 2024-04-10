@@ -15,6 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 // @EnableAsync
 public class KgcOaApplication {
     public static void main(String[] args) {
-        SpringApplication.run(KgcOaApplication.class, args);
+            SpringApplication.run(KgcOaApplication.class, args);
     }
 }
