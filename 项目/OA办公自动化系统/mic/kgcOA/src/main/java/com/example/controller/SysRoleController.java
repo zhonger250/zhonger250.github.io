@@ -56,10 +56,10 @@ public class SysRoleController {
     private RedisUtil redisUtil;
 
     @Resource
-    private SysRoleMenuService sysRoleMenuService;
+    private SysRoleMenuService roleMenuService;
 
     @Resource
-    private SysMenuService sysMenuService;
+    private SysMenuService menuService;
 
     @Resource
     private SysUserRoleService sysUserRoleService;
@@ -88,7 +88,7 @@ public class SysRoleController {
     @ApiOperation(value = "分页查询数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "currentPage", value = "当前页", defaultValue = "1", dataType = "int", paramType = "query"),
-            @ApiImplicitParam(name = "roleName", value = "角色名", defaultValue = "", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "roleName", value = "角色名", defaultValue = "1", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "pageSize", value = "每页显示条数", defaultValue = "5", dataType = "int", paramType = "query")
     })
     @CrossOrigin
@@ -117,10 +117,10 @@ public class SysRoleController {
     public List<SysMenu> getRoleMenuInfo(@PathVariable Serializable id) {
         LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysRoleMenu::getRid, id);
-        List<SysRoleMenu> list = sysRoleMenuService.list(queryWrapper);
+        List<SysRoleMenu> list = roleMenuService.list(queryWrapper);
         List<SysMenu> menuList = new ArrayList<>();
         for (SysRoleMenu sysRoleMenu : list) {
-            SysMenu sysMenu = sysMenuService.getById(sysRoleMenu.getMid());
+            SysMenu sysMenu = menuService.getById(sysRoleMenu.getMid());
             if (sysMenu != null) {
                 menuList.add(sysMenu);
             }
@@ -144,7 +144,7 @@ public class SysRoleController {
         if (StrUtil.isEmpty(sysRoleDTO.getRoleName())) {
             throw new HttpException(ResultConstant.ROLE_NAME_NULL_ERROR);
         }
-        if (StrUtil.isEmpty(sysRoleDTO.getDescription())) {
+        if (StrUtil.isEmpty(sysRoleDTO.getRoleName())) {
             throw new HttpException(ResultConstant.ROLE_DESCRIPTION_NULL_ERROR);
         }
         SysRole sysRole = new SysRole();

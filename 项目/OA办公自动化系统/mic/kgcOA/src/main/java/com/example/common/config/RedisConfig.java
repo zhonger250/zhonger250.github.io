@@ -1,27 +1,24 @@
 package com.example.common.config;
 
-import com.example.common.serializer.SimpleGrantedAuthorityDeserializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
- * Redis的配置类
+ *Redis的配置类
  */
 @Configuration
 public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, Object>
-    redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+             redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<String,
                 Object>();
         template.setConnectionFactory(redisConnectionFactory);
@@ -40,6 +37,8 @@ public class RedisConfig {
         // redisUtil.set("scott",person对象);
 
 
+
+
         // key采用String的序列化方式
         template.setKeySerializer(stringRedisSerializer);
 
@@ -48,11 +47,6 @@ public class RedisConfig {
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-
-        // 注册模块, 指定SimpleGrantedAuthority对象的反序列化器是 new SimpleGrantedAuthorityDeserializer()
-        om.registerModule(new SimpleModule().addDeserializer(SimpleGrantedAuthority.class, new SimpleGrantedAuthorityDeserializer()));
-
-
         jackson2JsonRedisSerializer.setObjectMapper(om);
         template.setValueSerializer(jackson2JsonRedisSerializer);
 

@@ -19,7 +19,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/vue-admin/system")
-@Api(tags = "系统模块")
+@Api(tags = "系统角色")
 @Validated
 @Slf4j
 public class SystemController {
@@ -54,45 +53,37 @@ public class SystemController {
     private SysUserService sysUserService;
 
     public static void main(String[] args) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encode = passwordEncoder.encode("123456");
-        System.out.println(encode);
+        String s = SecureUtil.md5("123456");
+        System.out.println(s);
     }
+
 
     @PostMapping("/user/login")
     @ApiOperation(value = "登录接口")
     @CrossOrigin
     public Result login(@RequestBody LoginDTO loginDTO) {
-        return Result.success();
+        log.debug("登录" + loginDTO);
+        // 密码
+        String password = SecureUtil.md5(loginDTO.getPassword());
+
+        // 查询用户信息
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getAccount, loginDTO.getAccount());
+        queryWrapper.eq(SysUser::getPassword, password);
+        SysUser one = sysUserService.getOne(queryWrapper);
+        if (one == null) {
+            // 如果没有找到, 就抛出登录异常
+            throw new HttpException(ResultConstant.LOGIN_ERROR);
+        }
+        // 登录成功, 返回token
+        String token = JwtUtil.createToken(String.valueOf(one.getId()), one.getAccount());
+
+
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+
+        return Result.builder().code(20000).data(map).message("ok").build();
     }
-
-
-//    @PostMapping("/user/login")
-//    @ApiOperation(value = "登录接口")
-//    @CrossOrigin
-//    public Result login(@RequestBody LoginDTO loginDTO) {
-//        log.debug("登录" + loginDTO);
-//        // 密码
-//        String password = SecureUtil.md5(loginDTO.getPassword());
-//
-//        // 查询用户信息
-//        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(SysUser::getAccount, loginDTO.getAccount());
-//        queryWrapper.eq(SysUser::getPassword, password);
-//        SysUser one = sysUserService.getOne(queryWrapper);
-//        if (one == null) {
-//            // 如果没有找到, 就抛出登录异常
-//            throw new HttpException(ResultConstant.LOGIN_ERROR);
-//        }
-//        // 登录成功, 返回token
-//        String token = JwtUtil.createToken(String.valueOf(one.getId()), one.getAccount());
-//
-//
-//        Map<String, String> map = new HashMap<>();
-//        map.put("token", token);
-//
-//        return Result.builder().code(20000).data(map).message("ok").build();
-//    }
 
     @GetMapping("/user/info")
     @ApiOperation(value = "获取用户信息接口")

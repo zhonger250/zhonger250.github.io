@@ -32,11 +32,6 @@ public enum ResultConstant {
      * 登录失败
      */
     LOGIN_ERROR(401,"登录失败"),
-    /**
-     * 账号被禁用
-     */
-    ACCOUNT_DISABLE(401,"账号被禁用"),
-    NO_PERMISSION(403,"无权限"),
 
     /**
      * 请求重复提交

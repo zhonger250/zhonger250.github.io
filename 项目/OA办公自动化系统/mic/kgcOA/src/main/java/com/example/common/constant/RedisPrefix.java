@@ -15,6 +15,4 @@ public class RedisPrefix {
      * 当额菜单详细信息key 前缀
      */
     public static final String SYSTEM_MENU_DETAIL = "system:menu:detail:";
-
-    public static final String SYSTEM_USER_PERMISSIONS="system:user:permissions:";
 }
