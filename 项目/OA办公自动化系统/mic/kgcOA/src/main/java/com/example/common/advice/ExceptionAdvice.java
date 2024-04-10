@@ -7,10 +7,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -25,11 +28,11 @@ import java.util.List;
  * SpringBoot程序如何去处理异常?
  * 使用ExceptionHandler注解将异常信息封装成Result对象返回给前端.
  */
-//@ControllerAdvice("com.example.controller")
+@ControllerAdvice("com.example.controller")
 public class ExceptionAdvice {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         // 1.响应编码 200
         HttpStatus httpStatus = HttpStatus.resolve(HttpStatus.OK.value());
         // 2.封装信息
@@ -41,7 +44,7 @@ public class ExceptionAdvice {
             errorMessage.append(fieldError.getDefaultMessage()).append(",");
         }
         // 如果字段上,没有错误,直接获得异常信息
-        if (StringUtils.isEmpty(errorMessage.toString())){
+        if (StringUtils.isEmpty(errorMessage.toString())) {
             errorMessage = new StringBuilder(e.getMessage());
             String[] msg = errorMessage.toString().split(";");
             errorMessage = new StringBuilder(msg[msg.length - 1]);
@@ -54,17 +57,14 @@ public class ExceptionAdvice {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity responseEntity = new ResponseEntity(result,headers,httpStatus);
+        ResponseEntity responseEntity = new ResponseEntity(result, headers, httpStatus);
         return responseEntity;
     }
 
 
-
-
-
-
     /**
      * 处理JSR303参数验证失败的异常
+     *
      * @param e JSR303验证失败异常
      * @return 响应信息
      */
@@ -78,7 +78,7 @@ public class ExceptionAdvice {
         String paramName = strs[0].split("\\.")[1];
         String errorMessage = strs[1];
         // 返回的错误信息
-        String  resultMessage = "参数验证失败, 参数名: " + paramName + ", 错误信息: " + errorMessage;
+        String resultMessage = "参数验证失败, 参数名: " + paramName + ", 错误信息: " + errorMessage;
         Result result = Result.builder().code(ResultConstant.PARAM_ERROR.getCode())
                 .message(resultMessage).build();
         // 响应头
@@ -88,13 +88,6 @@ public class ExceptionAdvice {
         ResponseEntity responseEntity = new ResponseEntity(result, headers, httpStatus);
         return responseEntity;
     }
-
-
-
-
-
-
-
 
 
     @ExceptionHandler(value = HttpException.class)
@@ -138,5 +131,17 @@ public class ExceptionAdvice {
         ResponseEntity responseEntity = new ResponseEntity(result, headers, httpStatus);
 
         return responseEntity;
+    }
+
+    /**
+     * spring security异常
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseBody
+    public Result error(AccessDeniedException e) throws AccessDeniedException {
+        return Result.builder().code(ResultConstant.NO_PERMISSION.getCode()).message(ResultConstant.NO_PERMISSION.getMessage()).build();
     }
 }
