@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/kgcOA/kgcOA.iml" filepath="$PROJECT_DIR$/kgcOA/kgcOA.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/mic.iml" filepath="$PROJECT_DIR$/.idea/mic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../../java_study/mic/vue-admin-template-master/vue-admin-template-master.iml" filepath="$PROJECT_DIR$/../../../../java_study/mic/vue-admin-template-master/vue-admin-template-master.iml" />
     </modules>
   </component>
 </project>
