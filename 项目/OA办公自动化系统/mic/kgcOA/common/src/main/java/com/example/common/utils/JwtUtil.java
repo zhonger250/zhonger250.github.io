@@ -26,7 +26,7 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() +
                         tokenExpiration)) //过期时间
                 .claim("userId", userId) //用户ID
-                .claim("username", userName) //用户名字
+                .claim("account", userName) //用户名字
                 //JWT签名:
                 .signWith(SignatureAlgorithm.HS512, tokenSignKey) //签名类 型 密钥
                 .compressWith(CompressionCodecs.GZIP) //对载荷进行压缩
@@ -51,7 +51,7 @@ public class JwtUtil {
             Jws<Claims> claimsJws =
                     Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
             Claims claims = claimsJws.getBody();
-            return (String) claims.get("username");
+            return (String) claims.get("account");
         } catch (Exception e) {
             throw new HttpException(ResultConstant.NO_LOGIN);
         }

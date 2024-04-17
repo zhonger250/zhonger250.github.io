@@ -5,7 +5,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import com.example.common.utils.QuartzUtil;
+import com.example.service.TbMeetingService;
 import com.example.workflow.job.MeetingWorkflowJob;
 import com.example.workflow.service.WorkflowService;
 import org.activiti.engine.HistoryService;
@@ -20,6 +22,7 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -45,6 +48,10 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Resource
     private HistoryService historyService;
 
+    @Resource
+    private TbMeetingService tbMeetingService;
+
+
     @Override
     public String startProcessInstance(Map param) {
         // 启动流程实例(使用param参数启动流程实例的参数) 获得流程实例的ID
@@ -65,7 +72,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         jobDataMap.put("uuid", uuid);
         jobDataMap.put("instanceId", instanceId);
         quartzUtil.addJob(jobDetail, uuid, "会议通过流程", startTime);
-        return null;
+        return instanceId;
     }
 
     @Override
@@ -89,7 +96,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         // 任务的创建者的名字
         String creatorName = MapUtil.getStr(param, "creator");
         // 获得角色待处理的任务
-        JSONArray jsonArray = (JSONArray) param.get("role");
+        JSONArray jsonArray = JSONUtil.parseArray(param.get("role"));
 
         // 任务的待处理人
         List<String> assigneeIds = new ArrayList<>();
@@ -106,51 +113,51 @@ public class WorkflowServiceImpl implements WorkflowService {
             TaskQuery taskQuery = taskService.createTaskQuery().orderByTaskCreateTime().desc()
                     .includeTaskLocalVariables().includeProcessVariables().taskAssigneeIds(assigneeIds);
             // 如果类型不为空
-            if (StrUtil.isNotBlank(type)){
+            if (StrUtil.isNotBlank(type)) {
                 // 查询任务时, 就按照任务进行筛选
-                taskQuery.processVariableValueEquals("type",type);
+                taskQuery.processVariableValueEquals("type", type);
             }
             // 如果创建人的名字不为空,
-            if (StrUtil.isNotBlank(creatorName)){
+            if (StrUtil.isNotBlank(creatorName)) {
                 // 查询任务时, 就按照创建人的名字进行筛选
-                taskQuery.processVariableValueEquals("creatorName",creatorName);
+                taskQuery.processVariableValueEquals("creatorName", creatorName);
             }
             // 如果流程实例不未空, 按照流程实例进行查询
-            if (StrUtil.isNotBlank(instanceId)){
+            if (StrUtil.isNotBlank(instanceId)) {
                 // 按照流程实例及逆行查询
-                taskQuery.processVariableValueEquals("instanceId",instanceId);
+                taskQuery.processVariableValueEquals("instanceId", instanceId);
             }
             // 查询到待审批的任务
-            List<Task> list = taskQuery.listPage(start,length);
+            List<Task> list = taskQuery.listPage(start, length);
             // 查询已审批的总记录数
             totalCount = taskQuery.count();
             // 遍历任务
             for (Task task : list) {
                 // 拷贝任务中的局部变量, 为了防止后面改这些局部变量, 影响到原来任务中的信息
                 Map<String, Object> map = new HashMap<>(task.getTaskLocalVariables());
-                map.put("taskId",task.getId());
-                map.put("processId",task.getProcessInstanceId());
-                map.put("status",status);
+                map.put("taskId", task.getId());
+                map.put("processId", task.getProcessInstanceId());
+                map.put("status", status);
                 listMap.add(map);
             }
-        } else if("已审批".equals(status)){
+        } else if ("已审批".equals(status)) {
             HistoricTaskInstanceQuery taskQuery = historyService.createHistoricTaskInstanceQuery().orderByTaskCreateTime()
-                    .includeProcessVariables().includeTaskLocalVariables().orderByTaskCreateTime().finished()
+                    .includeProcessVariables().includeTaskLocalVariables().orderByTaskCreateTime().taskAssigneeIds(assigneeIds).finished()
                     .processUnfinished();
             // 如果类型不为空
-            if (StrUtil.isNotBlank(type)){
+            if (StrUtil.isNotBlank(type)) {
                 // 查询任务时, 就按照任务进行筛选
-                taskQuery.processVariableValueEquals("type",type);
+                taskQuery.processVariableValueEquals("type", type);
             }
             // 如果创建人的名字不为空,
-            if (StrUtil.isNotBlank(creatorName)){
+            if (StrUtil.isNotBlank(creatorName)) {
                 // 查询任务时, 就按照创建人的名字进行筛选
-                taskQuery.processVariableValueEquals("creatorName",creatorName);
+                taskQuery.processVariableValueEquals("creatorName", creatorName);
             }
             // 如果流程实例不未空, 按照流程实例进行查询
-            if (StrUtil.isNotBlank(instanceId)){
+            if (StrUtil.isNotBlank(instanceId)) {
                 // 按照流程实例及逆行查询
-                taskQuery.processVariableValueEquals("instanceId",instanceId);
+                taskQuery.processVariableValueEquals("instanceId", instanceId);
             }
             // 查询已审批的任务
             List<HistoricTaskInstance> list = taskQuery.listPage(start, length);
@@ -160,9 +167,9 @@ public class WorkflowServiceImpl implements WorkflowService {
             for (HistoricTaskInstance task : list) {
                 // 拷贝任务中的局部变量, 为了防止后面改这些局部变量, 影响到原来任务中的信息
                 Map<String, Object> map = new HashMap<>(task.getTaskLocalVariables());
-                map.put("taskId",task.getId());
-                map.put("processId",task.getProcessInstanceId());
-                map.put("status",status);
+                map.put("taskId", task.getId());
+                map.put("processId", task.getProcessInstanceId());
+                map.put("status", status);
                 listMap.add(map);
             }
         } else if ("已结束".equals(status)) {
@@ -170,19 +177,19 @@ public class WorkflowServiceImpl implements WorkflowService {
                     .includeProcessVariables().includeTaskLocalVariables().orderByTaskCreateTime().finished()
                     .processFinished();
             // 如果类型不为空
-            if (StrUtil.isNotBlank(type)){
+            if (StrUtil.isNotBlank(type)) {
                 // 查询任务时, 就按照任务进行筛选
-                taskQuery.processVariableValueEquals("type",type);
+                taskQuery.processVariableValueEquals("type", type);
             }
             // 如果创建人的名字不为空,
-            if (StrUtil.isNotBlank(creatorName)){
+            if (StrUtil.isNotBlank(creatorName)) {
                 // 查询任务时, 就按照创建人的名字进行筛选
-                taskQuery.processVariableValueEquals("creatorName",creatorName);
+                taskQuery.processVariableValueEquals("creatorName", creatorName);
             }
             // 如果流程实例不未空, 按照流程实例进行查询
-            if (StrUtil.isNotBlank(instanceId)){
+            if (StrUtil.isNotBlank(instanceId)) {
                 // 按照流程实例及逆行查询
-                taskQuery.processVariableValueEquals("instanceId",instanceId);
+                taskQuery.processVariableValueEquals("instanceId", instanceId);
             }
             // 查询已审批的任务
             List<HistoricTaskInstance> list = taskQuery.listPage(start, length);
@@ -192,21 +199,115 @@ public class WorkflowServiceImpl implements WorkflowService {
             for (HistoricTaskInstance task : list) {
                 // 拷贝任务中的局部变量, 为了防止后面改这些局部变量, 影响到原来任务中的信息
                 Map<String, Object> map = new HashMap<>(task.getTaskLocalVariables());
-                map.put("taskId",task.getId());
-                map.put("processId",task.getProcessInstanceId());
-                map.put("status",status);
+                map.put("taskId", task.getId());
+                map.put("processId", task.getProcessInstanceId());
+                map.put("status", status);
                 listMap.add(map);
             }
         }
         // 最终返回的数据
-        HashMap<String,Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         // 封装的每个任务的局部变量, (这是我们前端需要展示的一些数据, 并不是前端展示任务的集合)
-        map.put("list",listMap);
-        map.put("totalCount",totalCount);
-        map.put("pageIndex",page);
-        map.put("pageSize",length);
-        map.put("start",start);
+        map.put("list", listMap);
+        map.put("totalCount", totalCount);
+        map.put("page", page);
+        map.put("length", length);
+        map.put("start", start);
 
         return map;
+    }
+
+    @Override
+    public HashMap searchApprovalContent(String instanceId, String userId, String[] role, String type, String status) {
+        // 任务的执行人
+        List<String> assignee = new ArrayList<>();
+        assignee.add(String.valueOf(userId));
+        for (String s : role) {
+            assignee.add(s);
+        }
+
+        // 最终返回的结果
+        HashMap map = null;
+
+        // 如果是会议申请
+        if (type.equals("会议申请")) {
+            //查询会议的申请内容(会议的信息与会议的时长)
+            map = tbMeetingService.searchMeetingByInstanceId(instanceId);
+        } else if (type.equals("请假申请")) {
+            // 查询请假申请信息
+        } else if (type.equals("财务审批")) {
+            // 查询财务申请信息
+        }
+
+        // 获得任务的审批结果, 因为任务的审批结果放在任务的局部变量中(任务审批完后, 会将审批结果放到局部变量中)
+        Map variables;
+        if (!"已结束".equals(status)) {
+            // 如果要查询的任务信息不是已结束, 使用runtimeService获得正在执行的任务的变量
+            variables = runtimeService.getVariables(instanceId);
+        } else {
+            HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().includeProcessVariables()
+                    .includeTaskLocalVariables().processInstanceId(instanceId).singleResult();
+            variables = instance.getProcessVariables();
+        }
+
+        // 根据流程实例的Id获得流程实例, 如果流程实例不为空, 说明任务还没有审批完, 就不需要从任务的局部变量中获得审批结果
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(instanceId).singleResult();
+        if (processInstance != null) {
+            // 如果流程实例ID不为空, 说明任务没有审批完, 返回的结果中审批结果就是空
+            map.put("result", "");
+        } else {
+            // 如果流程实例ID为空, 说明任务审批完了, 返回的结果就是审批结果
+            map.put("result", variables.get("result"));
+        }
+
+        return map;
+    }
+
+    @Override
+    public void approvalTask(HashMap param) {
+        String taskId = MapUtil.getStr(param, "taskId");
+        // 审批的意见: 同意, 不同意
+        String approval = MapUtil.getStr(param, "approval");
+
+        //在任务的局部变量中保存审批的结果
+        runtimeService.setVariable(taskId, "result", approval);
+
+        // 任务完成
+        taskService.complete(taskId);
+
+    }
+
+    /**
+     * 删除流程实例的业务操作
+     *
+     * @param uuid
+     * @param instanceId
+     * @param type
+     * @param reason
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteProcessInstance(String uuid, String instanceId, String type, String reason) {
+
+        // 根据流程实例Id删除会议申请的流程实例, 并且将此流程实例对应的历史记录删除
+        runtimeService.deleteProcessInstance(instanceId, reason);
+
+        long count = historyService.createHistoricProcessInstanceQuery().processInstanceId(instanceId).count();
+        if (count > 0) {
+            historyService.deleteHistoricProcessInstance(instanceId);
+        }
+        // 1.判断流程实例的类型, 如果是会议申请,
+        if ("会议申请".equals(type)) {
+            // 删除流程实例对应的定时任务,并且删除对应的会议信息(或者其他操作)
+            quartzUtil.deleteJob(uuid, "会议通过流程");
+            quartzUtil.deleteJob(uuid, "会议开始定时任务组");
+            quartzUtil.deleteJob(uuid, "会议结束定时任务组");
+            tbMeetingService.deleteMeeting(uuid);
+
+        } else if ("请假申请".equals(type)) {
+
+        } else if ("财务审批".equals(type)) {
+
+        }
     }
 }

@@ -4,4 +4,36 @@
     <update id="updateMeetingStatus">
         update tb_meeting set status=#{status} where uuid=#{uuid}
     </update>
+
+    <select id="searchMeetingByInstanceId" parameterType="String" resultType="hashmap">
+        SELECT m.id,
+               m.uuid,
+               u.name,
+               m.`desc`,
+               m.place,
+               m.type,
+               m.date,
+               DATE_FORMAT(m.start, '%H:%i') AS START,
+               DATE_FORMAT(m.end, '%H:%i') AS END,
+               (
+               SELECT GROUP_CONCAT(u.name SEPARATOR "、") FROM sys_user u
+               WHERE u.status=1 AND JSON_CONTAINS(m.members, CONVERT(u.id,CHAR))
+               ) AS members
+                 FROM tb_meeting m
+                 JOIN sys_user u ON m.creator_id = u.id
+        WHERE instance_id =#{instanceId}
+    </select>
+
+    <select id="searchMeetingByUUID" parameterType="String" resultType="HashMap">
+        SELECT m.uuid,m.title,u.name,date_format(m.date,'%Y-%m-%d') as date,m.place,
+            date_format(m.start,'%H:%i') as start, date_format(m.end,'%H:%i') as end, m.type,m.status,m.desc
+        FROM tb_meeting m
+        JOIN sys_user u on m.creator_id=u.id
+        WHERE m.uuid=#{uuid} and u.status=1
+    </select>
+
+    <delete id="deleteMeeting" parameterType="string">
+        delete from tb_meeting where uuid=#{uuid}
+    </delete>
+
 </mapper>
