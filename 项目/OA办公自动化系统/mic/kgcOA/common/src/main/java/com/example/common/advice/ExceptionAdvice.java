@@ -28,7 +28,7 @@ import java.util.List;
  * SpringBoot程序如何去处理异常?
  * 使用ExceptionHandler注解将异常信息封装成Result对象返回给前端.
  */
-@ControllerAdvice("com.example.controller")
+//@ControllerAdvice("com.example.controller")
 public class ExceptionAdvice {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

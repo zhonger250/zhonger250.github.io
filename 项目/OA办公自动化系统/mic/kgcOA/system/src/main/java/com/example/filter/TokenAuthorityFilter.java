@@ -44,6 +44,7 @@ public class TokenAuthorityFilter extends OncePerRequestFilter {
         // 登录请求直接放行
         if ("/vue-admin/system/user/login".equals(request.getRequestURI())) {
             filterChain.doFilter(request, response);
+//            return;
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);

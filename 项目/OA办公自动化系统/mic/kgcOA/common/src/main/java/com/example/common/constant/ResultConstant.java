@@ -88,6 +88,7 @@ public enum ResultConstant {
      * 菜单被使用
      */
     MENU_USED(3005,"菜单被使用"),
+    MEETING_ERROR(4001,"会议开始时间不能小于当前时间"),
     ;
 
 

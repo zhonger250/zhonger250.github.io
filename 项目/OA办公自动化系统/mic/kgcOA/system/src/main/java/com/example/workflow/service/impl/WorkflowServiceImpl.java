@@ -62,7 +62,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         // 获得会议的开始时间 年月日
         String date = MapUtil.getStr(param, "date");
         // 会议的开始时间 时分秒
-        String time = MapUtil.getStr(param, "time");
+        String time = MapUtil.getStr(param, "time")+":00";
         // 拼接会议开始执行的时间 yyyy-MM-dd HH:mm:ss
         DateTime startTime = DateUtil.parse(date + " " + time, "yyyy-MM-dd HH:mm:ss");
         // 在会议的开始时间创建一个定时任务, 判断此会议对应的流程实例是否存在, 如果会议开始时间到了, 流程实例还存在,
@@ -86,7 +86,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         // 记录数
         Integer length = MapUtil.getInt(param, "length");
         // 从第几条开始
-        Integer start = MapUtil.getInt(param, "start");
+        Integer start = (page - 1) * length;
         // 查询任务的状态
         String status = MapUtil.getStr(param, "status");
         // 获得任务的类型
@@ -270,10 +270,12 @@ public class WorkflowServiceImpl implements WorkflowService {
         String approval = MapUtil.getStr(param, "approval");
 
         //在任务的局部变量中保存审批的结果
-        runtimeService.setVariable(taskId, "result", approval);
+//        runtimeService.setVariable(taskId, "result", approval);
 
         // 任务完成
-        taskService.complete(taskId);
+        Map map = new HashMap<>();
+        map.put("result",approval);
+        taskService.complete(taskId,map);
 
     }
 

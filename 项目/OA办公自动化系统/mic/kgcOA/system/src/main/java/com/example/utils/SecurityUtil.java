@@ -1,4 +1,4 @@
-package com.example.common.utils;
+package com.example.utils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.entity.CustomerUser;
@@ -36,6 +36,6 @@ public class SecurityUtil {
         queryWrapper.eq(SysUserRole::getUid,userId);
         // 根据用户ID获得角色ID集合
         List<SysUserRole> list = sysUserRoleService.list(queryWrapper);
-        return list.stream().map(SysUserRole::getRid).toArray(String[]::new);
+        return list.stream().map(sysUserRole -> sysUserRole.getRid().toString()).toArray(String[]::new);
     }
 }

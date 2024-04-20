@@ -8,15 +8,15 @@
     <select id="searchMeetingByInstanceId" parameterType="String" resultType="hashmap">
         SELECT m.id,
                m.uuid,
-               u.name,
+               u.account,
                m.`desc`,
                m.place,
                m.type,
                m.date,
-               DATE_FORMAT(m.start, '%H:%i') AS START,
-               DATE_FORMAT(m.end, '%H:%i') AS END,
+               DATE_FORMAT(m.start, '%H:%i') AS start,
+               DATE_FORMAT(m.end, '%H:%i') AS end,
                (
-               SELECT GROUP_CONCAT(u.name SEPARATOR "、") FROM sys_user u
+               SELECT GROUP_CONCAT(u.account SEPARATOR " ") FROM sys_user u
                WHERE u.status=1 AND JSON_CONTAINS(m.members, CONVERT(u.id,CHAR))
                ) AS members
                  FROM tb_meeting m
@@ -25,7 +25,7 @@
     </select>
 
     <select id="searchMeetingByUUID" parameterType="String" resultType="HashMap">
-        SELECT m.uuid,m.title,u.name,date_format(m.date,'%Y-%m-%d') as date,m.place,
+        SELECT m.uuid,m.title,u.account,date_format(m.date,'%Y-%m-%d') as date,m.place,
             date_format(m.start,'%H:%i') as start, date_format(m.end,'%H:%i') as end, m.type,m.status,m.desc
         FROM tb_meeting m
         JOIN sys_user u on m.creator_id=u.id
@@ -35,5 +35,43 @@
     <delete id="deleteMeeting" parameterType="string">
         delete from tb_meeting where uuid=#{uuid}
     </delete>
+
+    <select id="searchOfflineMeetingRoomCount" resultType="long">
+        select   count(id)   from  tb_meeting_room  where status=1
+    </select>
+
+    <select id="searchOfflineMeetingByPage" parameterType="HashMap" resultType="HashMap">
+        SELECT `tb_meeting_room`.`name`,temp.meeting FROM tb_meeting_room LEFT JOIN
+        (SELECT place, CONCAT('[',
+        GROUP_CONCAT(
+            JSON_OBJECT(
+                    'start',DATE_FORMAT(`start`,'%H:%i'),
+                    'end',DATE_FORMAT(`end`,'%H:%i'),
+                    'status',`status`,
+                    'time',ROUND(TIMESTAMPDIFF(MINUTE,CONCAT(`date`,' ', `start`),CONCAT(`date`,' ',`end`))/30)
+                )
+        ),']'
+        ) AS 'meeting'
+        FROM tb_meeting
+        WHERE `date`=#{date} AND `type`=2 AND `status`!=2
+        <if test="model=='我的会议'">
+            AND JSON_CONTAINS(members,CAST(#{uid} AS CHAR))
+        </if>
+        GROUP BY `place`) AS `temp`
+        ON tb_meeting_room.`name`=temp.place
+        WHERE tb_meeting_room.`status`=1
+        LIMIT #{startRow},#{pageSize}
+    </select>
+
+    <insert id="insertMeeting" parameterType="hashmap">
+        insert into tb_meeting(`uuid`,`title`,`creator_id`,`date`,`start`,`end`,
+                               `type`,`place`,`members`,`desc`,`status`,`create_time`)
+        values (#{uuid},#{title},#{creatorId},#{date},#{start},#{end},
+                #{type},#{place},#{members},#{desc},#{status},#{createTime})
+    </insert>
+
+    <update id="updateMeetingInstanceId" >
+        update tb_meeting set instance_id=#{instanceId} where uuid = #{uuid}
+    </update>
 
 </mapper>

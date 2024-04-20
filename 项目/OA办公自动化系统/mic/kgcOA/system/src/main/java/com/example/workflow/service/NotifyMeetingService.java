@@ -45,7 +45,7 @@ public class NotifyMeetingService implements JavaDelegate {
         String result = MapUtil.getStr(variables, "result");
 
 
-        // 1.如果任务能够执行到发送通知的节点上, 说明任务已经蛇皮完成了(无论是否通过) 此时检查任务开始的定时器就可以删除了
+        // 1.如果任务能够执行到发送通知的节点上, 说明任务已经审批完成了(无论是否通过) 此时检查任务开始的定时器就可以删除了
         quartzUtil.deleteJob(uuid,"会议通过流程");
 
         if (result.equals("同意")){
@@ -69,7 +69,7 @@ public class NotifyMeetingService implements JavaDelegate {
             // 创建一个会议结束的定时器, 此定时器会在会议结束时将会议的状态改为"已结束"
             JobDetail jobDetail2 = JobBuilder.newJob(MeetingEndJob.class).build();
             jobDetail.getJobDataMap().put("uuid",uuid);
-            quartzUtil.addJob(jobDetail2,uuid,"会议结束定时任务组",meetEndTime);
+            quartzUtil.addJob(jobDetail2,uuid,"会议开结束定时任务组",meetEndTime);
         } else {
             // 3.如果审批不通过, 将会议的状态改为审批未通过
             tbMeetingService.updateMeetingStatus(uuid,2);

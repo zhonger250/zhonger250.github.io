@@ -1,7 +1,7 @@
 package com.example.workflow.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.example.common.utils.SecurityUtil;
+import com.example.utils.SecurityUtil;
 import com.example.common.vo.Result;
 import com.example.workflow.form.ApprovalTaskForm;
 import com.example.workflow.form.DeleteProcessInstanceForm;
@@ -70,7 +70,7 @@ public class WorkflowController {
         map.put("userId", userId);
         map.put("role", roleIds);
 
-        return map;
+        return workflowService.searchTaskByPage(map);
     }
 
 

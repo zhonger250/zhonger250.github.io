@@ -37,7 +37,7 @@ spring:
   quartz:
     jdbc:
       # always值为true, 每次启动数据库时, 都会执行quartz的sql脚本(建表).
-      initialize-schema: never
+      initialize-schema:
     # quartz框架定时使用数据库进行存储
     job-store-type: jdbc
 

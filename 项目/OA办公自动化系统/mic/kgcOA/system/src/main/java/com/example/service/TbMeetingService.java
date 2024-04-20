@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import java.util.HashMap;
 
 /**
@@ -37,4 +39,19 @@ public interface TbMeetingService {
      * @return
      */
     boolean deleteMeeting(String uuid);
+
+
+    /**
+     * 分页某一天所有会议室的所有会议信息
+     * @param map
+     * @return
+     */
+    Page<HashMap> searchOfflineMeetingByPage(HashMap map);
+
+    /**
+     * 申请线下会议
+     * @param map
+     * @return
+     */
+    boolean addOfflineMeeting(HashMap<String, Object> map);
 }

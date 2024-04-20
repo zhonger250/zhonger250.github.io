@@ -4,7 +4,7 @@
     <startEvent id="sid-10750a38-06d8-4f90-bff5-4d4a4e17bb39"/>
     <exclusiveGateway id="sid-ee57e164-9274-4e63-9b0f-5371b18e3b2f"/>
     <sequenceFlow id="sid-cd9fa8f9-6692-4439-afe2-f30374376b71" sourceRef="sid-10750a38-06d8-4f90-bff5-4d4a4e17bb39" targetRef="sid-ee57e164-9274-4e63-9b0f-5371b18e3b2f"/>
-    <userTask id="sid-860d5ab7-d61a-4d6a-bba2-f7ae17c7ac2a" name="部门主管审批"/>
+    <userTask id="sid-860d5ab7-d61a-4d6a-bba2-f7ae17c7ac2a" name="部门主管审批" activiti:assignee="${managerId}"/>
     <sequenceFlow id="sid-5bc447a1-804c-482e-b576-9f0cabb40b13" sourceRef="sid-ee57e164-9274-4e63-9b0f-5371b18e3b2f" targetRef="sid-860d5ab7-d61a-4d6a-bba2-f7ae17c7ac2a" name="不是总经理">
       <conditionExpression xsi:type="tFormalExpression">${identity!='总经理'}</conditionExpression>
     </sequenceFlow>
@@ -16,7 +16,7 @@
     <sequenceFlow id="sid-260ab4da-2a52-4300-a2a9-c8efd09323c8" sourceRef="sid-3bb12cd9-355a-4b07-b46d-0d97c2cf6c18" targetRef="sid-8920c9e7-4d94-41cf-94ad-af47db562fd4"/>
     <exclusiveGateway id="sid-7080c284-d033-480d-a4a5-526c34380f5e"/>
     <sequenceFlow id="sid-07e53cec-fa91-4715-86fa-695b77976dd5" sourceRef="sid-860d5ab7-d61a-4d6a-bba2-f7ae17c7ac2a" targetRef="sid-7080c284-d033-480d-a4a5-526c34380f5e"/>
-    <userTask id="sid-eeb0c9ac-b81b-4c78-af2e-cdb565450aee" name="公司经理审批"/>
+    <userTask id="sid-eeb0c9ac-b81b-4c78-af2e-cdb565450aee" name="公司经理审批" activiti:assignee="${gmId}"/>
     <sequenceFlow id="sid-f88b6e42-b106-4a04-a419-d7130cf5bad8" sourceRef="sid-7080c284-d033-480d-a4a5-526c34380f5e" targetRef="sid-eeb0c9ac-b81b-4c78-af2e-cdb565450aee" name="部门主管审批通过并且此会议是跨部门会议">
       <conditionExpression xsi:type="tFormalExpression">${result=='同意' &amp;&amp; sameDept==false}</conditionExpression>
     </sequenceFlow>
@@ -45,17 +45,17 @@
         <omgdi:waypoint x="-105.0" y="-100.5"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="shape-666649ef-c3db-48dc-9746-ee368167554b" bpmnElement="sid-3bb12cd9-355a-4b07-b46d-0d97c2cf6c18">
-        <omgdc:Bounds x="335.0" y="-35.0" width="100.0" height="80.0"/>
+        <omgdc:Bounds x="225.0" y="-35.0" width="100.0" height="80.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="edge-2f951b73-595e-4782-9227-6d790d67863c" bpmnElement="sid-1e6b4e98-7ebc-42ae-af4e-7d5194c488d7">
         <omgdi:waypoint x="-105.0" y="5.0"/>
-        <omgdi:waypoint x="335.0" y="5.0"/>
+        <omgdi:waypoint x="225.0" y="5.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="shape-944a8187-2c2c-40ee-a451-9cbc7b20d661" bpmnElement="sid-8920c9e7-4d94-41cf-94ad-af47db562fd4">
         <omgdc:Bounds x="570.0" y="-10.0" width="30.0" height="30.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="edge-22408307-010d-40a7-b4d2-30b5612b12f2" bpmnElement="sid-260ab4da-2a52-4300-a2a9-c8efd09323c8">
-        <omgdi:waypoint x="435.0" y="5.0"/>
+        <omgdi:waypoint x="325.0" y="5.0"/>
         <omgdi:waypoint x="570.00006" y="5.000001"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="shape-c7479153-f5c8-4051-966f-4168a20d9dbd" bpmnElement="sid-7080c284-d033-480d-a4a5-526c34380f5e">
@@ -66,20 +66,20 @@
         <omgdi:waypoint x="105.0" y="-140.5"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="shape-982ebf68-e6db-4777-8594-c5e7be26ab31" bpmnElement="sid-eeb0c9ac-b81b-4c78-af2e-cdb565450aee">
-        <omgdc:Bounds x="335.0" y="-180.5" width="100.0" height="80.0"/>
+        <omgdc:Bounds x="225.0" y="-180.5" width="100.0" height="80.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="edge-e7c284f7-8a03-4b9b-89ac-6d0be85cdd43" bpmnElement="sid-f88b6e42-b106-4a04-a419-d7130cf5bad8">
         <omgdi:waypoint x="145.0" y="-140.5"/>
-        <omgdi:waypoint x="335.0" y="-140.5"/>
+        <omgdi:waypoint x="225.0" y="-140.5"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="edge-18a33ab9-24da-4881-8e21-bd83de2d7abc" bpmnElement="sid-9291f1ea-7625-4223-8f83-109d7bd0f72f">
-        <omgdi:waypoint x="385.0" y="-100.50001"/>
-        <omgdi:waypoint x="385.0" y="-65.0"/>
-        <omgdi:waypoint x="385.0" y="-35.0"/>
+        <omgdi:waypoint x="275.0" y="-100.50001"/>
+        <omgdi:waypoint x="275.0" y="-65.0"/>
+        <omgdi:waypoint x="275.0" y="-35.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="edge-bbdf512c-7670-4a27-9ae9-45d39c7c31d0" bpmnElement="sid-77833cf4-a31e-48a4-9734-21a6a0e25a09">
         <omgdi:waypoint x="145.0" y="-140.50002"/>
-        <omgdi:waypoint x="335.0" y="-15.0"/>
+        <omgdi:waypoint x="225.0" y="-15.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

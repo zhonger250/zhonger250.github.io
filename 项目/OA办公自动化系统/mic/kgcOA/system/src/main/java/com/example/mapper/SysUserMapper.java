@@ -4,6 +4,7 @@ package com.example.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.entity.SysUser;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @Author: zhonger250
@@ -12,5 +13,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
-
+    /**
+     * 根据用户ID 查询用户所在部门经理的ID
+     * @param id 用户Id
+     * @return 经理Id
+     */
+    int selectUserManagerId(@Param("id") int id);
 }

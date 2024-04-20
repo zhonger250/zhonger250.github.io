@@ -1,11 +1,15 @@
 package com.example.workflow.form;
 
+import lombok.Data;
+
 /**
  * @Author: zhonger250
  * @Date: 2024/4/16 16:44
  * @Project: mic
  * @Description: 查询任务参数表单
  */
+
+@Data
 public class SearchTaskByPageForm {
     /**
      * 当前页
