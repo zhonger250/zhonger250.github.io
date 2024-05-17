@@ -38,26 +38,49 @@ public class MeetingWorkflowJob extends QuartzJobBean {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        // 获取任务中的参数
+        // 获得定时任务种传入的参数
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-        // 会议的唯一标识
+        // 会议ID
         String uuid = jobDataMap.get("uuid").toString();
-        // 流程实例Id
-        String instanceId = jobDataMap.get("instanceId").toString();
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionId(instanceId).singleResult();
-
+        // 流程实例ID
+        String processId = jobDataMap.get("processId").toString();
+        // 根据流程实例, 获得流程实例
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processId).singleResult();
         if (processInstance!=null){
-            // 流程实例不为空, 说明流程还未执行完毕
-            jobDataMap.put("processStatus","未结束");
-            // 删除流程, 删除定时器
-            runtimeService.deleteProcessInstance(instanceId,"会议已经开始, 审批已经过期");
-            // 获得此流程实例的历史记录, 如果历史记录数>0, 删除历史记录
-            long count = historyService.createHistoricProcessInstanceQuery().processInstanceId(instanceId).count();
+            // 会议开始, 审批流程还未开始, 会议的申请状态改为审核未通过, 删除流程实例以及流程实例的历史信息
+            jobDataMap.put("processStatus","流程未结束");
+            runtimeService.deleteProcessInstance(processId,"会议已经开始, 流程实例未执行完毕");
+            // 删除流程实例的历史记录
+            long count = historyService.createHistoricTaskInstanceQuery().processInstanceId(processId).count();
             if (count>0){
-                historyService.deleteHistoricProcessInstance(instanceId);
+                // 如果有历史记录, 就删除
+                historyService.deleteHistoricProcessInstance(processId);
             }
-            // 更改会议的状态, 将此会议的状态改为审批未通过
+            // 更改会议的状态
             tbMeetingService.updateMeetingStatus(uuid,2);
         }
+
+
+//        // 获取任务中的参数
+//        JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
+//        // 会议的唯一标识
+//        String uuid = jobDataMap.get("uuid").toString();
+//        // 流程实例Id
+//        String instanceId = jobDataMap.get("instanceId").toString();
+//        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionId(instanceId).singleResult();
+//
+//        if (processInstance!=null){
+//            // 流程实例不为空, 说明流程还未执行完毕
+//            jobDataMap.put("processStatus","未结束");
+//            // 删除流程, 删除定时器
+//            runtimeService.deleteProcessInstance(instanceId,"会议已经开始, 审批已经过期");
+//            // 获得此流程实例的历史记录, 如果历史记录数>0, 删除历史记录
+//            long count = historyService.createHistoricProcessInstanceQuery().processInstanceId(instanceId).count();
+//            if (count>0){
+//                historyService.deleteHistoricProcessInstance(instanceId);
+//            }
+//            // 更改会议的状态, 将此会议的状态改为审批未通过
+//            tbMeetingService.updateMeetingStatus(uuid,2);
+//        }
     }
 }

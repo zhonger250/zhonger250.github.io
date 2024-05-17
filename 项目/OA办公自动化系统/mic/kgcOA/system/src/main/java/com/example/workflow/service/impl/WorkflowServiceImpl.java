@@ -51,28 +51,66 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Resource
     private TbMeetingService tbMeetingService;
 
-
+    /**
+     * 启动流程实例
+     * @param param 向流程实例传递的参数<br>
+     *          uuid(会议的唯一标识) <br>
+     *          type(会议申请 财务申请 请假审批)<br>
+     *          creatorName(申请的创建人) <br>
+     *          date(会议的开始时间, 年月日)<br>
+     *          time(会议的开始时间, 时分秒)<br>
+     *          end(会议的结束时间)<br>
+     *
+     * @return
+     */
     @Override
     public String startProcessInstance(Map param) {
-        // 启动流程实例(使用param参数启动流程实例的参数) 获得流程实例的ID
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("meeting", param);
-        String instanceId = processInstance.getProcessInstanceId();
-        // 获得会议的ID
+        // 启动流程实例, 获得流程实例的ID
+        String processInstanceId = runtimeService.startProcessInstanceByKey("meeting", param).getProcessInstanceId();
+        // 获得会议的唯一标识
         String uuid = MapUtil.getStr(param, "uuid");
-        // 获得会议的开始时间 年月日
+        // 获得会议的开始时间
         String date = MapUtil.getStr(param, "date");
-        // 会议的开始时间 时分秒
-        String time = MapUtil.getStr(param, "time")+":00";
-        // 拼接会议开始执行的时间 yyyy-MM-dd HH:mm:ss
-        DateTime startTime = DateUtil.parse(date + " " + time, "yyyy-MM-dd HH:mm:ss");
-        // 在会议的开始时间创建一个定时任务, 判断此会议对应的流程实例是否存在, 如果会议开始时间到了, 流程实例还存在,
-        // 说明会议没有审批通过.
+        String start = MapUtil.getStr(param, "time")+"00";
+        // 组成会议开始时间
+        DateTime meetStartTime = DateUtil.parse(date + " " + start, "yyyy-MM-dd HH:mm:ss");
+
+        // 在会议开始的时候创建一个定时器
         JobDetail jobDetail = JobBuilder.newJob(MeetingWorkflowJob.class).build();
+        // 向定时器任务中传递参数
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put("uuid", uuid);
-        jobDataMap.put("instanceId", instanceId);
-        quartzUtil.addJob(jobDetail, uuid, "会议通过流程", startTime);
-        return instanceId;
+        jobDataMap.put("uuid",uuid);
+        jobDataMap.put("processId",processInstanceId);
+        // 在会议开始的时候, 设置定时器
+        quartzUtil.addJob(jobDetail,uuid,"会议申请",meetStartTime);
+        return processInstanceId;
+
+
+
+
+
+
+
+
+//        // 启动流程实例(使用param参数启动流程实例的参数) 获得流程实例的ID
+//        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("meeting", param);
+//        String instanceId = processInstance.getProcessInstanceId();
+//        // 获得会议的ID
+//        String uuid = MapUtil.getStr(param, "uuid");
+//        // 获得会议的开始时间 年月日
+//        String date = MapUtil.getStr(param, "date");
+//        // 会议的开始时间 时分秒
+//        String time = MapUtil.getStr(param, "time")+":00";
+//        // 拼接会议开始执行的时间 yyyy-MM-dd HH:mm:ss
+//        DateTime startTime = DateUtil.parse(date + " " + time, "yyyy-MM-dd HH:mm:ss");
+//        // 在会议的开始时间创建一个定时任务, 判断此会议对应的流程实例是否存在, 如果会议开始时间到了, 流程实例还存在,
+//        // 说明会议没有审批通过.
+//        JobDetail jobDetail = JobBuilder.newJob(MeetingWorkflowJob.class).build();
+//        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+//        jobDataMap.put("uuid", uuid);
+//        jobDataMap.put("instanceId", instanceId);
+//        quartzUtil.addJob(jobDetail, uuid, "会议通过流程", startTime);
+//        return instanceId;
     }
 
     @Override
@@ -94,7 +132,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         // 流程实例的ID
         String instanceId = MapUtil.getStr(param, "instanceId");
         // 任务的创建者的名字
-        String creatorName = MapUtil.getStr(param, "creator");
+        String creatorName = MapUtil.getStr(param, "creatorName");
         // 获得角色待处理的任务
         JSONArray jsonArray = JSONUtil.parseArray(param.get("role"));
 
